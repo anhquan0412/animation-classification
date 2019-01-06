@@ -1,0 +1,11 @@
+__pycache__/
+.ipynb_checkpoints
+
+*.py[cod]
+*$py.class
+.Python
+env/
+build/
+
+data_draw/
+data_crop/
