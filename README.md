@@ -1,4 +1,4 @@
-# Project: Animation Classification using Deep Learning
+# Project: Animated Movie Classification using Deep Learning
 
 This is a repo for this detailed [blog post](https://quantran.xyz/blog/building-an-image-classification-model-from-a-to-z/). Including Grad-CAM visualization Python module ([code](gradcam.py) and [use cases](gradcam-usecase.ipynb)) and notebooks containing training processes and steps. If you want to trace my process, here is the order (for more details you can visit the blog post):
 1. [crop-fix.ipynb](crop-fix.ipynb)
