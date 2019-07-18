@@ -17,7 +17,7 @@ class GradCam():
         x_img = ds.x[img_idx]
         xb,_ = interp.data.one_item(x_img)
         xb_img = Image(interp.data.denorm(xb)[0])
-        probs = interp.probs[img_idx].numpy()
+        probs = interp.preds[img_idx].numpy()
 
         pred_idx = interp.pred_class[img_idx].item() # get class idx of img prediction label
         hmap_pred,xb_grad_pred = get_grad_heatmap(learn,xb,pred_idx,size=xb_img.shape[-1])
@@ -35,6 +35,12 @@ class GradCam():
     
     @classmethod
     def from_one_img(cls,learn,x_img,label1=None,label2=None):
+        '''
+        learn: fastai's Learner
+        x_img: fastai.vision.image.Image
+        label1: generate heatmap according to this label. If None, this wil be the label with highest probability from the model
+        label2: generate additional heatmap according to this label
+        '''
         pred_class,pred_idx,probs = learn.predict(x_img)
         label1= str(pred_class) if not label1 else label1
         
@@ -150,8 +156,9 @@ def get_grad_heatmap(learn,xb,y,size):
     target_grad = hook_g.stored[0][0].cpu().numpy()
     
     mean_grad = target_grad.mean(1).mean(1)
-    hmap = (target_act*mean_grad[...,None,None]).mean(0)
-
+#     hmap = (target_act*mean_grad[...,None,None]).mean(0)
+    hmap = (target_act*mean_grad[...,None,None]).sum(0)
+    hmap = np.where(hmap >= 0, hmap, 0)
     
     xb_grad = guided_backprop(learn,xb,y) # (3,224,224)        
     #minmax norm the grad
